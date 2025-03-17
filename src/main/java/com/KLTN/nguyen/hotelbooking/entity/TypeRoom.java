@@ -1,9 +1,6 @@
 package com.KLTN.nguyen.hotelbooking.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -18,7 +15,7 @@ import java.util.List;
 public class TypeRoom {
     @Id
     private String code;
-
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String description;
 
     @OneToMany(mappedBy = "typeRoom")

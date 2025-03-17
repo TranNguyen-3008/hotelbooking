@@ -16,9 +16,10 @@ public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String hotelName;
     private String image;
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String address;
     private String phoneNumber;
     private String email;

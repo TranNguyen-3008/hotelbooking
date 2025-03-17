@@ -17,6 +17,7 @@ public class User {
     private Long id;
 
     private String username;
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String fullName;
     private String password;
     private String cccd;

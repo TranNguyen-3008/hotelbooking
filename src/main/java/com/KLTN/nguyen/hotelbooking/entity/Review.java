@@ -16,6 +16,7 @@ public class Review {
     private Long id;
 
     private int star;
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String comment;
 
     @ManyToOne

@@ -16,7 +16,7 @@ public class Province {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String provinceName;
 
     @OneToMany(mappedBy = "province")
