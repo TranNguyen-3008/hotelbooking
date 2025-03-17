@@ -23,7 +23,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody User request) {
-        if (userRepository.findByUserName(request.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
             return ResponseEntity.ok(new String("User already"));
         }
 

@@ -42,5 +42,8 @@ public class Hotel {
 
     @OneToMany(mappedBy = "hotel")
     private List<HotelAttributes> attributes;
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
 }
 

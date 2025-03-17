@@ -13,7 +13,8 @@ public class HotelResponse {
     private String email;
     private String phoneNumber;
     private String provinceName;
-    private String status;
+    private String ownerEmail;
+    private Long ownerId;
     private List<String> attributes;
     private List<String> photoUrls;
 }

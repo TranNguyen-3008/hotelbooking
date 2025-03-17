@@ -56,14 +56,14 @@ public class UserService {
 
     }
     public String authenticateUser(AuthenticationRequest loginRequest) throws KeyLengthException {
-        var user = userRepository.findByUserName(loginRequest.getUserName())
+        var user = userRepository.findByUsername(loginRequest.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        boolean authenticated = passwordEncoder.matches(loginRequest.getPassWord(), user.getPassword());
+        boolean authenticated = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
         if(!authenticated)
             throw new BadCredentialsException("Wrong password");
 
         String token = generateToken(user);
-        log.info("Authenticating user: {}", loginRequest.getUserName());
+        log.info("Authenticating user: {}", loginRequest.getUsername());
         return token;
     }
 }

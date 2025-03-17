@@ -12,6 +12,7 @@ public class HotelRequest {
     private String email;
     private String phoneNumber;
     private Long provinceId;
+    private Long ownerId;
     private String statusCode;
     private List<Long> attributeIds;
 }
