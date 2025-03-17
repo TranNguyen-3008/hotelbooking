@@ -10,4 +10,5 @@ public class UserRequest {
     private String cccd;
     private String email;
     private String phoneNumber;
+    private String role;
 }
