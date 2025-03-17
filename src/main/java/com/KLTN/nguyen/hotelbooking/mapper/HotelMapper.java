@@ -4,8 +4,8 @@ import com.KLTN.nguyen.hotelbooking.entity.Hotel;
 import com.KLTN.nguyen.hotelbooking.entity.Province;
 import com.KLTN.nguyen.hotelbooking.entity.User;
 import com.KLTN.nguyen.hotelbooking.entity.HotelStatus;
-import com.KLTN.nguyen.hotelbooking.request.HotelRequest;
-import com.KLTN.nguyen.hotelbooking.response.HotelResponse;
+import com.KLTN.nguyen.hotelbooking.dto.request.HotelRequest;
+import com.KLTN.nguyen.hotelbooking.dto.response.HotelResponse;
 
 public class HotelMapper {
 

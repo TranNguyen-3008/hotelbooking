@@ -1,4 +1,4 @@
-package com.KLTN.nguyen.hotelbooking.response;
+package com.KLTN.nguyen.hotelbooking.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class UserResponse {
-    private Long id;
+    private Integer id;
     private String username;
     private String fullName;
     private String cccd;
@@ -14,4 +14,5 @@ public class UserResponse {
     private String phoneNumber;
     private String role;
     private Boolean isWorking;
+
 }

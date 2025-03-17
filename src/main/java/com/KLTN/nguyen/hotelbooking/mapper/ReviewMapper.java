@@ -1,7 +1,7 @@
 package com.KLTN.nguyen.hotelbooking.mapper;
 
 import com.KLTN.nguyen.hotelbooking.entity.Review;
-import com.KLTN.nguyen.hotelbooking.response.ReviewResponse;
+import com.KLTN.nguyen.hotelbooking.dto.response.ReviewResponse;
 
 public class ReviewMapper {
     public static ReviewResponse toResponseDTO(Review review) {

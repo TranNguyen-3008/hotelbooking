@@ -13,7 +13,7 @@ import lombok.*;
 public class HotelAttributes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "hotel_id")

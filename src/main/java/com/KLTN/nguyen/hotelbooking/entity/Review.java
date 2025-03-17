@@ -13,7 +13,7 @@ import lombok.*;
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private int star;
     @Column(columnDefinition = "NVARCHAR(MAX)")

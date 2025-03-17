@@ -1,4 +1,4 @@
-package com.KLTN.nguyen.hotelbooking.response;
+package com.KLTN.nguyen.hotelbooking.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

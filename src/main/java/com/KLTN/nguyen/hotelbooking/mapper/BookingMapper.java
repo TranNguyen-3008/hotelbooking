@@ -1,8 +1,7 @@
 package com.KLTN.nguyen.hotelbooking.mapper;
 
 import com.KLTN.nguyen.hotelbooking.entity.*;
-import com.KLTN.nguyen.hotelbooking.request.BookingRequest;
-import com.KLTN.nguyen.hotelbooking.response.BookingResponse;
+import com.KLTN.nguyen.hotelbooking.dto.response.BookingResponse;
 
 public class BookingMapper {
     public static BookingResponse toResponseDTO(Booking booking) {

@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String username;
     @Column(columnDefinition = "NVARCHAR(MAX)")
@@ -24,6 +24,7 @@ public class User {
     private String email;
     private String phoneNumber;
     private String role;
+    @Column(name = "is_working")
     private Boolean isWorking;
 
     @OneToMany(mappedBy = "user")

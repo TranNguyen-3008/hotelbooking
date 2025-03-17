@@ -1,69 +1,68 @@
 package com.KLTN.nguyen.hotelbooking.service;
 
+import com.KLTN.nguyen.hotelbooking.dto.request.AuthenticationRequest;
+import com.KLTN.nguyen.hotelbooking.dto.request.UserRequest;
+import com.KLTN.nguyen.hotelbooking.dto.response.ErrorResponse;
+import com.KLTN.nguyen.hotelbooking.dto.response.UserResponse;
 import com.KLTN.nguyen.hotelbooking.entity.User;
-import com.KLTN.nguyen.hotelbooking.request.AuthenticationRequest;
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jwt.JWTClaimsSet;
+import com.KLTN.nguyen.hotelbooking.mapper.UserMapper;
+import com.KLTN.nguyen.hotelbooking.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContextException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.apache.catalina.mapper.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.KLTN.nguyen.hotelbooking.repository.UserRepo;
-import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.StringJoiner;
-
-@Slf4j
+import java.time.Clock;
+import java.util.List;
+import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    public Object createUser(UserRequest request){
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
 
-    @Value("${jwt.expirationMs}")
-    private int jwtExpirationMs;
-    private final UserRepo userRepository;
-    public String generateToken(User user) throws KeyLengthException {
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername())
-                .issuer("chekinghotel.com")
-                .issueTime(new Date())
-                .expirationTime(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .claim("scope",user.getRole())
-                .claim("id",user.getId())
-                .build();
-        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
-
-        try {
-            JWSObject jwsObject = new JWSObject(header,payload);
-            jwsObject.sign(new MACSigner(jwtSecret.getBytes()));
-            return jwsObject.serialize();
-        }catch(JOSEException e) {
-            log.error("cannot create token", e);
-            throw new RuntimeException(e);
+            return ErrorResponse.builder()
+                    .status(HttpStatus.BAD_REQUEST.value())
+                    .message("User already")
+                    .build();
         }
 
-    }
-    public String authenticateUser(AuthenticationRequest loginRequest) throws KeyLengthException {
-        var user = userRepository.findByUsername(loginRequest.getUsername())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        boolean authenticated = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
-        if(!authenticated)
-            throw new BadCredentialsException("Wrong password");
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(request.getRole())
+                .email(request.getEmail())
+                .phoneNumber(request.getPhoneNumber())
+                .isWorking(request.getIsWorking())
+                .build();
 
-        String token = generateToken(user);
-        log.info("Authenticating user: {}", loginRequest.getUsername());
-        return token;
+        userRepository.save(user);
+        return UserMapper.toResponseDTO(user);
+    }
+    public List<UserResponse> getUsers(Integer pageNumber){
+        Pageable page = PageRequest.of(pageNumber, 10);
+        List<User> userList = userRepository.findAll();
+        return userList.stream().map(UserMapper::toResponseDTO).toList();
+    }
+    public UserResponse updateUser(Integer id, UserRequest userRequest){
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("User not found"));
+        user.setUsername(userRequest.getUsername());
+        user.setEmail(userRequest.getEmail());
+        user.setFullName(userRequest.getFullName());
+        user.setCccd(userRequest.getCccd());
+        user.setPhoneNumber(userRequest.getPhoneNumber());
+        user.setRole(userRequest.getRole());
+        user.setIsWorking(userRequest.getIsWorking());
+        userRepository.save(user);
+        return UserMapper.toResponseDTO(user);
     }
 }

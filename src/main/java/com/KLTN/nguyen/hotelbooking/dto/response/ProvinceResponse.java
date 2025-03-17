@@ -1,4 +1,4 @@
-package com.KLTN.nguyen.hotelbooking.response;
+package com.KLTN.nguyen.hotelbooking.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class ProvinceResponse {
-    private Long id;
+    private Integer id;
     private String provinceName;
 }

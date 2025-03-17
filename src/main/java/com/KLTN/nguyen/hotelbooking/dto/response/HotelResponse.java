@@ -1,4 +1,4 @@
-package com.KLTN.nguyen.hotelbooking.response;
+package com.KLTN.nguyen.hotelbooking.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 @Builder
 public class HotelResponse {
-    private Long id;
+    private Integer id;
     private String hotelName;
     private String image;
     private String address;
@@ -16,7 +16,7 @@ public class HotelResponse {
     private String phoneNumber;
     private String provinceName;
     private String ownerEmail;
-    private Long ownerId;
+    private Integer ownerId;
     private String statusDescription;
     private List<String> attributes;
     private List<String> photoUrls;

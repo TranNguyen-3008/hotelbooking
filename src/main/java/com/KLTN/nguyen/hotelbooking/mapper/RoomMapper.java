@@ -3,8 +3,8 @@ package com.KLTN.nguyen.hotelbooking.mapper;
 import com.KLTN.nguyen.hotelbooking.entity.Hotel;
 import com.KLTN.nguyen.hotelbooking.entity.Room;
 import com.KLTN.nguyen.hotelbooking.entity.TypeRoom;
-import com.KLTN.nguyen.hotelbooking.request.RoomRequest;
-import com.KLTN.nguyen.hotelbooking.response.RoomResponse;
+import com.KLTN.nguyen.hotelbooking.dto.request.RoomRequest;
+import com.KLTN.nguyen.hotelbooking.dto.response.RoomResponse;
 
 public class RoomMapper {
 

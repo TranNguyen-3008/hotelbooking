@@ -1,9 +1,11 @@
 package com.KLTN.nguyen.hotelbooking.mapper;
 
 import com.KLTN.nguyen.hotelbooking.entity.User;
-import com.KLTN.nguyen.hotelbooking.request.UserRequest;
-import com.KLTN.nguyen.hotelbooking.response.UserResponse;
+import com.KLTN.nguyen.hotelbooking.dto.request.UserRequest;
+import com.KLTN.nguyen.hotelbooking.dto.response.UserResponse;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserMapper {
 
     public static User toEntity(UserRequest dto) {
@@ -27,6 +29,7 @@ public class UserMapper {
                 .cccd(user.getCccd())
                 .phoneNumber(user.getPhoneNumber())
                 .role(user.getRole())
+                .isWorking(user.getIsWorking())
                 .build();
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 public class PaymentMethod {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
     @Column(columnDefinition = "NVARCHAR(MAX)")
     private String methodName;
 

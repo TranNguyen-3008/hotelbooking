@@ -1,4 +1,4 @@
-package com.KLTN.nguyen.hotelbooking.response;
+package com.KLTN.nguyen.hotelbooking.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class RoomResponse {
-    private Long id;
+    private Integer id;
     private Double price;
     private String typeRoom;
     private String hotelName;

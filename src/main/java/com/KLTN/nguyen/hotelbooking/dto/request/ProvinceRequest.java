@@ -1,4 +1,4 @@
-package com.KLTN.nguyen.hotelbooking.request;
+package com.KLTN.nguyen.hotelbooking.dto.request;
 
 import lombok.Data;
 
