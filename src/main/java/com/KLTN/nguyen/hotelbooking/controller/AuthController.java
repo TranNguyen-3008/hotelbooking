@@ -1,12 +1,12 @@
 package com.KLTN.nguyen.hotelbooking.controller;
 
-import com.KLTN.nguyen.hotelbooking.entity.UserEntity;
-import com.KLTN.nguyen.hotelbooking.request.LoginRequest;
-import com.KLTN.nguyen.hotelbooking.response.LoginResponse;
+import com.KLTN.nguyen.hotelbooking.entity.User;
+import com.KLTN.nguyen.hotelbooking.request.AuthenticationRequest;
+import com.KLTN.nguyen.hotelbooking.response.AuthenticationResponse;
+import com.KLTN.nguyen.hotelbooking.response.UserResponse;
 import com.KLTN.nguyen.hotelbooking.service.UserService;
 import com.nimbusds.jose.KeyLengthException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -22,24 +22,24 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public String register(@RequestBody UserEntity request) {
-        if (userRepository.findByUserName(request.getUserName()).isPresent()) {
-            return "Username already exists!";
+    public ResponseEntity<Object> register(@RequestBody User request) {
+        if (userRepository.findByUserName(request.getUsername()).isPresent()) {
+            return ResponseEntity.ok(new String("User already"));
         }
 
-        UserEntity user = UserEntity.builder()
-                .userName(request.getUserName())
-                .passWord(passwordEncoder.encode(request.getPassWord()))
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .build();
 
         userRepository.save(user);
 
-        return "User registered successfully!";
+        return ResponseEntity.ok(user);
     }
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authentication(@RequestBody LoginRequest request) throws KeyLengthException {
+    public ResponseEntity<AuthenticationResponse> authentication(@RequestBody AuthenticationRequest request) throws KeyLengthException {
         String token = userService.authenticateUser(request);
-        return ResponseEntity.ok(new LoginResponse(token));
+        return ResponseEntity.ok(new AuthenticationResponse(token));
     }
 }

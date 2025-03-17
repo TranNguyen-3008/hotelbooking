@@ -1,0 +1,46 @@
+package com.KLTN.nguyen.hotelbooking.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.List;
+
+@Entity
+@Table(name = "hotels")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Hotel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String hotelName;
+    private String image;
+    private String address;
+    private String phoneNumber;
+    private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "province_id")
+    private Province province;
+
+    @ManyToOne
+    @JoinColumn(name = "status_code")
+    private HotelStatus status;
+
+    @OneToMany(mappedBy = "hotel")
+    private List<Room> rooms;
+
+    @OneToMany(mappedBy = "hotel")
+    private List<Review> reviews;
+
+    @OneToMany(mappedBy = "hotel")
+    private List<HotelPhoto> photos;
+
+    @OneToMany(mappedBy = "hotel")
+    private List<HotelAttributes> attributes;
+}
+

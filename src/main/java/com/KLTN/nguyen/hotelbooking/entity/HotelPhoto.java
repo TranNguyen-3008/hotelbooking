@@ -4,19 +4,20 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "hotel_photos")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserEntity {
+public class HotelPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userName;
-    private String passWord;
+    private String urlPhoto;
 
-    private String role; // Ví dụ: ROLE_USER, ROLE_ADMIN
+    @ManyToOne
+    @JoinColumn(name = "hotel_id")
+    private Hotel hotel;
 }

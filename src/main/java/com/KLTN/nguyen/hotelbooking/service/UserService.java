@@ -1,7 +1,7 @@
 package com.KLTN.nguyen.hotelbooking.service;
 
-import com.KLTN.nguyen.hotelbooking.entity.UserEntity;
-import com.KLTN.nguyen.hotelbooking.request.LoginRequest;
+import com.KLTN.nguyen.hotelbooking.entity.User;
+import com.KLTN.nguyen.hotelbooking.request.AuthenticationRequest;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -33,10 +33,10 @@ public class UserService {
     @Value("${jwt.expirationMs}")
     private int jwtExpirationMs;
     private final UserRepo userRepository;
-    public String generateToken(UserEntity user) throws KeyLengthException {
+    public String generateToken(User user) throws KeyLengthException {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUserName())
+                .subject(user.getUsername())
                 .issuer("chekinghotel.com")
                 .issueTime(new Date())
                 .expirationTime(new Date(System.currentTimeMillis() + jwtExpirationMs))
@@ -55,10 +55,10 @@ public class UserService {
         }
 
     }
-    public String authenticateUser(LoginRequest loginRequest) throws KeyLengthException {
+    public String authenticateUser(AuthenticationRequest loginRequest) throws KeyLengthException {
         var user = userRepository.findByUserName(loginRequest.getUserName())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        boolean authenticated = passwordEncoder.matches(loginRequest.getPassWord(), user.getPassWord());
+        boolean authenticated = passwordEncoder.matches(loginRequest.getPassWord(), user.getPassword());
         if(!authenticated)
             throw new BadCredentialsException("Wrong password");
 
