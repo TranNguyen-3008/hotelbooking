@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import com.KLTN.nguyen.hotelbooking.repository.UserRepository;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 

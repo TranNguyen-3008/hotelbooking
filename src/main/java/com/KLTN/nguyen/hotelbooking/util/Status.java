@@ -1,9 +1,10 @@
 package com.KLTN.nguyen.hotelbooking.util;
 
 
-public enum BookingStatus {
+public enum Status {
     PENDING,
     REJECT,
     SUCCESS,
-    CANCEL
+    HIDING,
+    CANCEL;
 }
