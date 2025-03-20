@@ -6,5 +6,5 @@ import lombok.Data;
 public class ReviewRequest {
     private int star;
     private String comment;
-    private Long hotelId;
+    private Integer hotelId;
 }

@@ -11,9 +11,9 @@ public class HotelRequest {
     private String address;
     private String email;
     private String phoneNumber;
-    private Long provinceId;
-    private Long ownerId;
+    private Integer provinceId;
+    private Integer ownerId;
     private String statusCode;
-    private List<Long> attributeIds;
+    private List<Integer> attributeIds;
 }
 

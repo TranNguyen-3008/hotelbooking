@@ -6,6 +6,6 @@ import lombok.Data;
 public class RoomRequest {
     private Double price;
     private String typeRoomCode;
-    private Long hotelId;
+    private Integer hotelId;
 }
 

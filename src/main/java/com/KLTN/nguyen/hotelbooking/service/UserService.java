@@ -49,7 +49,7 @@ public class UserService {
     }
     public List<UserResponse> getUsers(Integer pageNumber){
         Pageable page = PageRequest.of(pageNumber, 10);
-        List<User> userList = userRepository.findAll();
+        List<User> userList = userRepository.findAll(page).getContent();
         return userList.stream().map(UserMapper::toResponseDTO).toList();
     }
     public UserResponse updateUser(Integer id, UserRequest userRequest){
