@@ -2,10 +2,7 @@ package com.KLTN.nguyen.hotelbooking.service;
 
 import com.KLTN.nguyen.hotelbooking.dto.request.HotelRequest;
 import com.KLTN.nguyen.hotelbooking.dto.response.HotelResponse;
-import com.KLTN.nguyen.hotelbooking.entity.Hotel;
-import com.KLTN.nguyen.hotelbooking.entity.HotelStatus;
-import com.KLTN.nguyen.hotelbooking.entity.Province;
-import com.KLTN.nguyen.hotelbooking.entity.User;
+import com.KLTN.nguyen.hotelbooking.entity.*;
 import com.KLTN.nguyen.hotelbooking.mapper.HotelMapper;
 import com.KLTN.nguyen.hotelbooking.repository.HotelRepository;
 import com.KLTN.nguyen.hotelbooking.repository.ProvinceRepository;
