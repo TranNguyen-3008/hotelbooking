@@ -14,6 +14,8 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(columnDefinition = "NVARCHAR(MAX)")
+    private String roomName;
 
     private Double price;
 
