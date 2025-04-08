@@ -8,19 +8,12 @@ import com.KLTN.nguyen.hotelbooking.dto.response.RoomResponse;
 
 public class RoomMapper {
 
-    public static Room toEntity(RoomRequest dto, Hotel hotel, TypeRoom typeRoom) {
-        return Room.builder()
-                .price(dto.getPrice())
-                .hotel(hotel)
-                .typeRoom(typeRoom)
-                .build();
-    }
-
     public static RoomResponse toResponseDTO(Room room) {
         return RoomResponse.builder()
                 .id(room.getId())
                 .price(room.getPrice())
                 .hotelName(room.getHotel().getHotelName())
+                .roomName(room.getRoomName())
                 .typeRoom(room.getTypeRoom().getDescription())
                 .build();
     }

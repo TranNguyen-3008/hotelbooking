@@ -10,4 +10,5 @@ public class RoomResponse {
     private Double price;
     private String typeRoom;
     private String hotelName;
+    private String roomName;
 }
