@@ -6,5 +6,6 @@ public enum Status {
     REJECT,
     SUCCESS,
     HIDING,
+    ACCEPT,
     CANCEL;
 }

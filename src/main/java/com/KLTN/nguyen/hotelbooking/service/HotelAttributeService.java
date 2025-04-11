@@ -1,9 +1,7 @@
 package com.KLTN.nguyen.hotelbooking.service;
 
-import com.KLTN.nguyen.hotelbooking.dto.request.AttributeRequest;
 import com.KLTN.nguyen.hotelbooking.dto.request.HotelAttributeRequest;
 import com.KLTN.nguyen.hotelbooking.dto.request.HotelPhotoRequest;
-import com.KLTN.nguyen.hotelbooking.dto.response.AttributeResponse;
 import com.KLTN.nguyen.hotelbooking.dto.response.HotelAttributeResponse;
 import com.KLTN.nguyen.hotelbooking.dto.response.HotelPhotoResponse;
 import com.KLTN.nguyen.hotelbooking.entity.Attribute;
