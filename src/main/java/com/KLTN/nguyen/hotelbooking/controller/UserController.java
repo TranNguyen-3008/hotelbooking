@@ -24,15 +24,30 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
     @PostMapping("/create")
-    public ResponseEntity<Object> creatUsers(@RequestParam UserRequest userRequest){
+    public ResponseEntity<Object> creatUsers(@RequestBody UserRequest userRequest){
         return ResponseEntity.ok(userService.createUser(userRequest));
     }
-    @PatchMapping
-    public ResponseEntity<UserResponse> updateUser(Authentication authentication, @RequestBody UserRequest userUpdate){
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        int id = ((Long) jwt.getClaim("id")).intValue();
-        System.out.println("isWorking in request: " + userUpdate.getIsWorking());
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable("id") Integer id, @RequestBody UserRequest userUpdate){
         return ResponseEntity.ok(userService.updateUser(id, userUpdate));
     }
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
+        boolean deleted = userService.deleteUser(id);
+        if (deleted) {
+            return ResponseEntity.ok("User deleted successfully");
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @PutMapping("/lock/{id}")
+    public ResponseEntity<?> lockUser(@PathVariable Integer id) {
+        userService.lockUser(id);
+        return ResponseEntity.ok().body("User locked successfully");
+    }
+    @PutMapping("/active/{id}")
+    public ResponseEntity<?> activeUser(@PathVariable Integer id) {
+        userService.activeUser(id);
+        return ResponseEntity.ok().body("User active successfully");
+    }
 }

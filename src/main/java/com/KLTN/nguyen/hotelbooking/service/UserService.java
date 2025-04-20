@@ -65,4 +65,22 @@ public class UserService {
         userRepository.save(user);
         return UserMapper.toResponseDTO(user);
     }
+    public boolean deleteUser(Integer id) {
+        User user = userRepository.findById(id).orElseThrow(()->
+                new EntityNotFoundException("User not found"));
+        userRepository.deleteById(id);
+        return true;
+    }
+    public void lockUser(Integer id){
+        User user = userRepository.findById(id).orElseThrow(()->
+                new EntityNotFoundException("User not found"));
+        user.setIsWorking(Boolean.FALSE);
+        userRepository.save(user);
+    }
+    public void activeUser(Integer id){
+        User user = userRepository.findById(id).orElseThrow(()->
+                new EntityNotFoundException("User not found"));
+        user.setIsWorking(Boolean.TRUE);
+        userRepository.save(user);
+    }
 }
