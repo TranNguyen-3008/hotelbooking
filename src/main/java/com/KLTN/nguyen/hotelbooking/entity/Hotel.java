@@ -1,5 +1,6 @@
 package com.KLTN.nguyen.hotelbooking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,7 @@ public class Hotel {
     private String email;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "province_id")
     private Province province;
 

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookingStatusRepository extends JpaRepository<BookingStatus, String> {
     BookingStatus findByCode(String name);
+    BookingStatus findByStatus(String status);
 }

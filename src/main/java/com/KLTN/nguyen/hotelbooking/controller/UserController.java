@@ -1,7 +1,10 @@
 package com.KLTN.nguyen.hotelbooking.controller;
 
 import com.KLTN.nguyen.hotelbooking.dto.request.UserRequest;
+import com.KLTN.nguyen.hotelbooking.dto.response.HotelResponse;
 import com.KLTN.nguyen.hotelbooking.dto.response.UserResponse;
+import com.KLTN.nguyen.hotelbooking.entity.User;
+import com.KLTN.nguyen.hotelbooking.service.AuthenticationService;
 import com.KLTN.nguyen.hotelbooking.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final AuthenticationService authenticationService;
     @GetMapping("/users")
     public ResponseEntity<List<UserResponse>> getUsers(
             @RequestParam(value = "page", defaultValue = "0") Integer pageNumber) {
@@ -26,6 +30,18 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<Object> creatUsers(@RequestBody UserRequest userRequest){
         return ResponseEntity.ok(userService.createUser(userRequest));
+    }
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getUser(@RequestHeader("Authorization") String authorizationHeader){
+        try {
+            String token = authorizationHeader.substring(7); // Loại bỏ 'Bearer ' từ token
+            Long userId = authenticationService.getUserIdFromToken(token);
+            Integer id = userId.intValue();
+            UserResponse user = userService.getUser(id);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(null); // Trả về BadRequest nếu có lỗi
+        }
     }
     @PatchMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable("id") Integer id, @RequestBody UserRequest userUpdate){

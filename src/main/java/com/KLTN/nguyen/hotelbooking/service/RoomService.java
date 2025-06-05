@@ -28,9 +28,11 @@ public class RoomService {
                 () -> new EntityNotFoundException("Can't find hotel")
         );
         Room room = Room.builder()
+                .hotel(hotel)
                 .roomName(roomRequest.getRoomName())
                 .price(roomRequest.getPrice())
                 .typeRoom(typeRoomRepository.findByCode(roomRequest.getTypeRoomCode()))
+                .image(roomRequest.getImage())
                 .build();
         roomRepository.save(room);
         return RoomMapper.toResponseDTO(room);

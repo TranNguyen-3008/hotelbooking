@@ -9,7 +9,7 @@ public class ReviewMapper {
                 .id(review.getId())
                 .star(review.getStar())
                 .comment(review.getComment())
-                .username(review.getUser().getUsername())
+                .username(review.getUser().getFullName())
                 .hotelName(review.getHotel().getHotelName())
                 .build();
     }

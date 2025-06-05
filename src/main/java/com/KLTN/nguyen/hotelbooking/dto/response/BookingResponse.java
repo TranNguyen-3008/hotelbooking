@@ -14,7 +14,7 @@ public class BookingResponse {
     private LocalDate bookingDate;
     private Double totalPrice;
     private String status;
-    private String roomType;
+    private String roomName;
     private String hotelName;
     private String paymentMethod;
 }

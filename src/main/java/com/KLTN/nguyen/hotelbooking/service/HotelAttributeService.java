@@ -28,17 +28,23 @@ public class HotelAttributeService {
     final HotelAttributeRepository hotelAttributeRepository;
     final HotelRepository hotelRepository;
     final HotelPhotoRepository hotelPhotoRepository;
-    public HotelAttributeResponse addAttribute(HotelAttributeRequest request){
-        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(()->
-                new EntityNotFoundException("Hotel can't found"));
-        Attribute attribute = attributeRepository.findById(request.getAttributeId()).orElseThrow(()->
-                new EntityNotFoundException("Attribute not found"));
-        HotelAttributes hotelAttribute = HotelAttributes.builder()
-                .hotel(hotel)
-                .attribute(attribute)
-                .build();
-        hotelAttributeRepository.save(hotelAttribute);
-        return HotelAttributeMapper.toDTO(hotelAttribute);
+    public List<HotelAttributeResponse> updateHotelAttributes(Integer hotelId, List<String> attributeNames) {
+        Hotel hotel = hotelRepository.findById(hotelId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy khách sạn"));
+
+        List<Attribute> attributes = attributeRepository.findByAttributeIn(attributeNames);
+        List<HotelAttributes> newHotelAttributes = attributes.stream()
+                .map(attr -> HotelAttributes.builder()
+                        .hotel(hotel)
+                        .attribute(attr)
+                        .build())
+                .toList();
+        hotelAttributeRepository.saveAll(newHotelAttributes);
+        return newHotelAttributes.stream()
+                .map(hotelAttr -> HotelAttributeResponse.builder()
+                        .attributeName(hotelAttr.getAttribute().getAttribute())
+                        .build())
+                .collect(Collectors.toList());
     }
     public List<HotelAttributeResponse> getAttributesByHotelId(Integer hotelId) {
         Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() ->
@@ -52,19 +58,16 @@ public class HotelAttributeService {
                 })
                 .collect(Collectors.toList());
     }
-
-    public HotelPhotoResponse addPhoto(HotelPhotoRequest request) {
-        Hotel hotel = hotelRepository.findById(request.getHotelId())
+    public HotelPhotoResponse addPhoto(Integer hotelId, String photoUrl) {
+        Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new EntityNotFoundException("Hotel not found"));
         HotelPhoto hotelPhoto = HotelPhoto.builder()
                 .hotel(hotel)
-                .urlPhoto(request.getUrlPhoto())
+                .urlPhoto(photoUrl)
                 .build();
         hotelPhotoRepository.save(hotelPhoto);
-
         return HotelPhotoMapper.toResponseDTO(hotelPhoto);
     }
-
     public List<HotelPhotoResponse> getPhotosByHotelId(Integer hotelId) {
         List<HotelPhoto> photos = hotelPhotoRepository.findByHotelId(hotelId);
 
@@ -72,8 +75,10 @@ public class HotelAttributeService {
                 .map(HotelPhotoMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
-
     public void deletePhoto(Integer photoId) {
         hotelPhotoRepository.deleteById(photoId);
+    }
+    public List<Attribute> getAllAttributes(){
+        return attributeRepository.findAll();
     }
 }

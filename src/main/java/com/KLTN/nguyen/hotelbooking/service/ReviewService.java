@@ -1,17 +1,24 @@
 package com.KLTN.nguyen.hotelbooking.service;
 
 import com.KLTN.nguyen.hotelbooking.dto.request.ReviewRequest;
+import com.KLTN.nguyen.hotelbooking.dto.response.HotelResponse;
 import com.KLTN.nguyen.hotelbooking.dto.response.ReviewResponse;
 import com.KLTN.nguyen.hotelbooking.entity.Hotel;
 import com.KLTN.nguyen.hotelbooking.entity.Review;
 import com.KLTN.nguyen.hotelbooking.entity.User;
+import com.KLTN.nguyen.hotelbooking.mapper.HotelMapper;
 import com.KLTN.nguyen.hotelbooking.mapper.ReviewMapper;
 import com.KLTN.nguyen.hotelbooking.repository.HotelRepository;
 import com.KLTN.nguyen.hotelbooking.repository.ReviewRepository;
 import com.KLTN.nguyen.hotelbooking.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -51,5 +58,20 @@ public class ReviewService {
         reviewRepository.delete(review);
         return ReviewMapper.toResponseDTO(review);
     }
+    public List<ReviewResponse> getReviews(Integer pageNumber){
+        Pageable page = PageRequest.of(pageNumber, 10);
+        List<Review> reviews = reviewRepository.findAll(page).getContent();
+        return reviews.stream().map(ReviewMapper::toResponseDTO).toList();
+    }
+    public Page<ReviewResponse> getReviewsByHotel(Integer hotelId, Pageable pageable) {
+        Page<Review> reviewsPage = reviewRepository.findByHotelId(hotelId, pageable);
 
+        return reviewsPage.map(review -> ReviewResponse.builder()
+                .id(review.getId())
+                .star(review.getStar())
+                .comment(review.getComment())
+                .username(review.getUser().getUsername()) // giả sử Review liên kết User
+                .hotelName(review.getHotel().getHotelName())    // giả sử Review liên kết Hotel
+                .build());
+    }
 }

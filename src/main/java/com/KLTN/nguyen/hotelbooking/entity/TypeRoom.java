@@ -1,5 +1,6 @@
 package com.KLTN.nguyen.hotelbooking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +18,7 @@ public class TypeRoom {
     private String code;
     @Column(columnDefinition = "NVARCHAR(MAX)")
     private String description;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "typeRoom")
     private List<Room> rooms;
 }

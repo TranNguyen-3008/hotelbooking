@@ -8,6 +8,7 @@ import lombok.Data;
 public class RoomResponse {
     private Integer id;
     private Double price;
+    private String image;
     private String typeRoom;
     private String hotelName;
     private String roomName;

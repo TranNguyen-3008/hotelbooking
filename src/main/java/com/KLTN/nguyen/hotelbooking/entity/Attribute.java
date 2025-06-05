@@ -1,5 +1,6 @@
 package com.KLTN.nguyen.hotelbooking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,7 @@ public class Attribute {
     private Integer id;
     @Column(columnDefinition = "NVARCHAR(MAX)")
     private String attribute;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "attribute")
     private List<HotelAttributes> hotelAttributes;
 }

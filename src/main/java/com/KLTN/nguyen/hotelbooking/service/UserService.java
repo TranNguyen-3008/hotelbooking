@@ -7,6 +7,7 @@ import com.KLTN.nguyen.hotelbooking.dto.response.UserResponse;
 import com.KLTN.nguyen.hotelbooking.entity.User;
 import com.KLTN.nguyen.hotelbooking.mapper.UserMapper;
 import com.KLTN.nguyen.hotelbooking.repository.UserRepository;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.mapper.Mapper;
@@ -26,13 +27,10 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    public Object createUser(UserRequest request){
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+    public UserResponse createUser(UserRequest request){
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
 
-            return ErrorResponse.builder()
-                    .status(HttpStatus.BAD_REQUEST.value())
-                    .message("User already")
-                    .build();
+            throw new EntityExistsException("User already exist");
         }
 
         User user = User.builder()
@@ -82,5 +80,17 @@ public class UserService {
                 new EntityNotFoundException("User not found"));
         user.setIsWorking(Boolean.TRUE);
         userRepository.save(user);
+    }
+    public UserResponse getUser(Integer id){
+        User user = userRepository.findById(id).orElseThrow(()->
+                new EntityNotFoundException("User not found"));
+        return UserMapper.toResponseDTO(user);
+    }
+    public User createUserOnlyEmail(String email){
+        User user = User.builder()
+                .email(email)
+                .password(email)
+                .build();
+        return user;
     }
 }

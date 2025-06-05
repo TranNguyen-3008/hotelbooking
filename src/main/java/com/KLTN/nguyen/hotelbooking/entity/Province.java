@@ -1,5 +1,6 @@
 package com.KLTN.nguyen.hotelbooking.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,5 +21,6 @@ public class Province {
     private String provinceName;
 
     @OneToMany(mappedBy = "province")
+    @JsonIgnore
     private List<Hotel> hotels;
 }

@@ -15,6 +15,7 @@ public class RoomMapper {
                 .hotelName(room.getHotel().getHotelName())
                 .roomName(room.getRoomName())
                 .typeRoom(room.getTypeRoom().getDescription())
+                .image(room.getImage())
                 .build();
     }
 }

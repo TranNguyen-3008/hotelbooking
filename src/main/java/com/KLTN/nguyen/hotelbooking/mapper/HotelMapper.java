@@ -1,9 +1,6 @@
 package com.KLTN.nguyen.hotelbooking.mapper;
 
-import com.KLTN.nguyen.hotelbooking.entity.Hotel;
-import com.KLTN.nguyen.hotelbooking.entity.Province;
-import com.KLTN.nguyen.hotelbooking.entity.User;
-import com.KLTN.nguyen.hotelbooking.entity.HotelStatus;
+import com.KLTN.nguyen.hotelbooking.entity.*;
 import com.KLTN.nguyen.hotelbooking.dto.request.HotelRequest;
 import com.KLTN.nguyen.hotelbooking.dto.response.HotelResponse;
 
@@ -33,8 +30,13 @@ public class HotelMapper {
                 .provinceName(hotel.getProvince() != null ? hotel.getProvince().getProvinceName() : null)
                 .ownerId(hotel.getOwner() != null ? hotel.getOwner().getId() : null)
                 .ownerEmail(hotel.getOwner() != null ? hotel.getOwner().getEmail() : null)
-                .statusDescription(hotel.getStatus() != null ? hotel.getStatus().getCode() : null)
-
+                .statusDescription(hotel.getStatus().getDescription())
+                .attributes(
+                        hotel.getAttributes().stream()
+                                .map(hotelAttr -> hotelAttr.getAttribute().getAttribute()) // Lấy tên thuộc tính
+                                .toList()
+                )
+                .photoUrls(hotel.getPhotos().stream().map(photo->photo.getUrlPhoto()).toList())
                 .build();
     }
 }

@@ -16,7 +16,6 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalDate bookingDate;
@@ -37,4 +36,5 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "payment_method_id")
     private PaymentMethod paymentMethod;
+
 }

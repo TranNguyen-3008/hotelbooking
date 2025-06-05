@@ -16,7 +16,7 @@ public class Room {
     private Integer id;
     @Column(columnDefinition = "NVARCHAR(MAX)")
     private String roomName;
-
+    private String image;
     private Double price;
 
     @ManyToOne

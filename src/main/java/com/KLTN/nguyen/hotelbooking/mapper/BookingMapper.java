@@ -12,9 +12,11 @@ public class BookingMapper {
                 .bookingDate(booking.getBookingDate())
                 .totalPrice(booking.getTotalPrice())
                 .status(booking.getStatus().getStatus())
-                .roomType(booking.getRoom().getTypeRoom().getDescription())
+                .roomName(booking.getRoom().getRoomName())
                 .hotelName(booking.getRoom().getHotel().getHotelName())
-                .paymentMethod(booking.getPaymentMethod().getMethodName())
+                .paymentMethod(booking.getPaymentMethod() != null
+                        ? booking.getPaymentMethod().getMethodName()
+                        : "Chưa có phương thức thanh toán")
                 .build();
     }
 }
