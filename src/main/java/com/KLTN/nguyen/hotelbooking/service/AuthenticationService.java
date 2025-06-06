@@ -9,6 +9,7 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import com.KLTN.nguyen.hotelbooking.repository.UserRepository;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Slf4j
@@ -68,6 +70,9 @@ public class AuthenticationService {
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Sai mật khẩu");
         }
+        if (user.getIsWorking() == null || !user.getIsWorking()) {
+            throw new EntityExistsException("Tài khoảng đang bị khóa");
+        }
         String token = generateToken(user);
         return AuthenticationResponse.builder()
                 .accessToken(token)
@@ -85,9 +90,9 @@ public class AuthenticationService {
     }
     public AdminStatsResponse getStats(LocalDate startDate, LocalDate endDate) {
         long revenue = bookingRepository.calculateTotalRevenue(startDate, endDate);
-        long bookings = bookingRepository.countByBookingDateBetween(startDate.atStartOfDay(), endDate.plusDays(1).atStartOfDay());
-        long users = userRepository.countByRole("ROLE_USER");
-        long hotelOwners = userRepository.countByRole("ROLE_OWNER");
+        long bookings = bookingRepository.countByBookingDateBetween(startDate, endDate);
+        long users = userRepository.countByRole("USER");
+        long hotelOwners = userRepository.countByRole("OWNER");
 
         return new AdminStatsResponse(revenue, bookings, users, hotelOwners);
     }

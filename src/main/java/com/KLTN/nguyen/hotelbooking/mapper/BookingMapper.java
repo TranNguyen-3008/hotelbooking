@@ -13,6 +13,7 @@ public class BookingMapper {
                 .totalPrice(booking.getTotalPrice())
                 .status(booking.getStatus().getStatus())
                 .roomName(booking.getRoom().getRoomName())
+                .email(booking.getUser().getEmail())
                 .hotelName(booking.getRoom().getHotel().getHotelName())
                 .paymentMethod(booking.getPaymentMethod() != null
                         ? booking.getPaymentMethod().getMethodName()

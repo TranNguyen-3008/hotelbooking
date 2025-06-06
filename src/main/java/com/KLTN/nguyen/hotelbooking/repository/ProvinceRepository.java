@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProvinceRepository extends JpaRepository<Province,Integer> {
+    Province findByProvinceName(String name);
 }

@@ -43,9 +43,8 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
-    long countByBookingDateBetween(LocalDateTime start, LocalDateTime end);
-
-    @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.bookingDate BETWEEN :start AND :end")
+    @Query("SELECT COALESCE(SUM(b.totalPrice), 0) FROM Booking b WHERE b.bookingDate >= :start AND b.bookingDate < :end")
     long calculateTotalRevenue(@Param("start") LocalDate start, @Param("end") LocalDate end);
 
+    long countByBookingDateBetween(LocalDate start, LocalDate end);
 }

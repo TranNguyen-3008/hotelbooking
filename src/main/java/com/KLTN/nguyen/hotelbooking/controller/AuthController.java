@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import com.KLTN.nguyen.hotelbooking.repository.UserRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -40,9 +41,10 @@ public class AuthController {
     }
     @GetMapping("/stats")
     public ResponseEntity<AdminStatsResponse> getStats(
-            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
     ) {
+        System.out.println("Received startDate: " + startDate + ", endDate: " + endDate);
         return ResponseEntity.ok(authenticationService.getStats(startDate, endDate));
     }
 }

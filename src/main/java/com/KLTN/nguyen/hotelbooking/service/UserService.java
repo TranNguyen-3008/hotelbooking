@@ -36,7 +36,7 @@ public class UserService {
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .role("CUSTOMER")
                 .email(request.getEmail())
                 .phoneNumber(request.getPhoneNumber())
                 .isWorking(request.getIsWorking())
@@ -87,10 +87,17 @@ public class UserService {
         return UserMapper.toResponseDTO(user);
     }
     public User createUserOnlyEmail(String email){
-        User user = User.builder()
+        return User.builder()
                 .email(email)
-                .password(email)
+                .password(passwordEncoder.encode(email))
                 .build();
-        return user;
+    }
+    public UserResponse changePassword(Integer id, String oldPassword, String newPassword){
+        User user = userRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("heehe"));
+        if(passwordEncoder.matches(oldPassword, user.getPassword())){
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+        }
+        return UserMapper.toResponseDTO(user);
     }
 }

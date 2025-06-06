@@ -4,6 +4,7 @@ import com.KLTN.nguyen.hotelbooking.dto.request.BookingRequest;
 import com.KLTN.nguyen.hotelbooking.dto.request.MomoPaymentRequest;
 import com.KLTN.nguyen.hotelbooking.dto.response.BookingResponse;
 import com.KLTN.nguyen.hotelbooking.service.BookingService;
+import com.KLTN.nguyen.hotelbooking.service.EmailService;
 import com.KLTN.nguyen.hotelbooking.service.MomoService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,8 @@ import java.util.Map;
 public class MomoController {
 
     private MomoService momoService;
-    final BookingService bookingService;
+    private final BookingService bookingService;
+    private final EmailService emailService;
     @PostMapping("/create")
     public ResponseEntity<?> createMomoPayment(@RequestBody MomoPaymentRequest request) {
         try {
@@ -53,7 +55,9 @@ public class MomoController {
             Long orderId = Long.parseLong(numberPart);
 
             if ("0".equals(resultCode)) {
-                bookingService.updateBookingStatus(orderId.intValue(), "ĐÃ XÁC NHẬN");
+                BookingResponse bookingResponse = bookingService.updateBookingStatus(orderId.intValue(), "ĐÃ XÁC NHẬN");
+                emailService.sendSimpleEmail(bookingResponse.getEmail(), "Xác nhận đặt phòng", "Đơn đặt phòng của bạn đã được tạo với id là " + orderId.intValue());
+
                 return ResponseEntity.ok("IPN received and booking created.");
             }
 

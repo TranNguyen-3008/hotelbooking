@@ -56,6 +56,7 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<BookingResponse> createBooking(@RequestBody BookingRequest bookingRequest) {
             BookingResponse bookingResponse = bookingService.createBooking(bookingRequest);
+            emailService.sendSimpleEmail(bookingRequest.getEmail(), "Xác nhận đặt phòng", "Đơn đặt phòng của bạn đã được tạo với id là " + bookingResponse.getId());
             return ResponseEntity.ok(bookingResponse);
     }
     @GetMapping("/hotel/{hotelId}")
@@ -92,21 +93,21 @@ public class BookingController {
     ) {
         return ResponseEntity.ok(bookingService.getRevenueByEndDate(hotelId, startDate, endDate));
     }
-    @GetMapping("/send-test")
-    public ResponseEntity<String> sendTestEmail() {
-        emailService.sendSimpleEmail(
-                "21t1080025@husc.edu.vn",
-                "Đặt phòng thành công",
-                "Nội dung test: Yêu em"
-        );
-        return ResponseEntity.ok("Email đã được gửi (qua Controller).");
-    }
     @PutMapping("/{bookingId}/status")
     public ResponseEntity<BookingResponse> updateBookingStatus(
             @PathVariable Integer bookingId,
             @RequestParam String status) {
+            if(status.equals("CANCELLED")){
+                status = "ĐÃ HỦY";
+            }
             BookingResponse bookingResponse = bookingService.updateBookingStatus(bookingId, status);
             return ResponseEntity.ok(bookingResponse);
+    }
+    @PatchMapping("/{bookingId}/cancel")
+    public ResponseEntity<BookingResponse> cancelBooking(
+            @PathVariable Integer bookingId) {
+        BookingResponse bookingResponse = bookingService.cancelBooking(bookingId);
+        return ResponseEntity.ok(bookingResponse);
     }
 }
 

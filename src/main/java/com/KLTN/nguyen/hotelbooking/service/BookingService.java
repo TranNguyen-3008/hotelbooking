@@ -35,12 +35,12 @@ public class BookingService {
     private final PaymentMethodRepository paymentMethodRepository;
     public BookingResponse createBooking(BookingRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+                .orElse(userService.createUserOnlyEmail(request.getEmail()));
 
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new RuntimeException("Phòng không tồn tại"));
         BookingStatus status = bookingStatusRepository.findByCode(Status.PENDING.name());
-        PaymentMethod paymentMethod = paymentMethodRepository.findByMethodName("CAST");
+        PaymentMethod paymentMethod = paymentMethodRepository.findByMethodName("CASH");
         Booking booking = Booking.builder()
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
@@ -91,15 +91,16 @@ public class BookingService {
         Booking booking = bookingRepository.findById(id).orElseThrow(
                 ()-> new EntityNotFoundException("Booking not found")
         );
-        booking.setStatus(bookingStatusRepository.findByCode((Status.CANCEL.name())));
+        BookingStatus cancelStatus = bookingStatusRepository.findByCode(Status.CANCEL.name());
+        booking.setStatus(cancelStatus);
         bookingRepository.save(booking);
         return BookingMapper.toResponseDTO(booking);
     }
-    public BookingResponse acceptBooking(Integer id){
+    public BookingResponse reviewedBooking(Integer id){
         Booking booking = bookingRepository.findById(id).orElseThrow(
                 ()-> new EntityNotFoundException("Booking not found")
         );
-        booking.setStatus(bookingStatusRepository.findByCode((Status.ACCEPT.name())));
+        booking.setStatus(bookingStatusRepository.findByCode((Status.REVIEWED.name())));
         bookingRepository.save(booking);
         return BookingMapper.toResponseDTO(booking);
     }

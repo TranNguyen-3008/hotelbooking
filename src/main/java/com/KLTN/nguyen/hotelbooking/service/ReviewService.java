@@ -1,13 +1,13 @@
 package com.KLTN.nguyen.hotelbooking.service;
 
 import com.KLTN.nguyen.hotelbooking.dto.request.ReviewRequest;
-import com.KLTN.nguyen.hotelbooking.dto.response.HotelResponse;
 import com.KLTN.nguyen.hotelbooking.dto.response.ReviewResponse;
+import com.KLTN.nguyen.hotelbooking.entity.Booking;
 import com.KLTN.nguyen.hotelbooking.entity.Hotel;
 import com.KLTN.nguyen.hotelbooking.entity.Review;
 import com.KLTN.nguyen.hotelbooking.entity.User;
-import com.KLTN.nguyen.hotelbooking.mapper.HotelMapper;
 import com.KLTN.nguyen.hotelbooking.mapper.ReviewMapper;
+import com.KLTN.nguyen.hotelbooking.repository.BookingRepository;
 import com.KLTN.nguyen.hotelbooking.repository.HotelRepository;
 import com.KLTN.nguyen.hotelbooking.repository.ReviewRepository;
 import com.KLTN.nguyen.hotelbooking.repository.UserRepository;
@@ -26,11 +26,13 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final HotelRepository hotelRepository;
-    public ReviewResponse addReview(Integer id, ReviewRequest request){
+    private final BookingRepository bookingRepository;
+    public ReviewResponse addReview(Integer bookingId,Integer id, ReviewRequest request){
+        Booking booking = bookingRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("he"));
         User user = userRepository.findById(id).orElseThrow(
                 ()-> new EntityNotFoundException("User not found")
         );
-        Hotel hotel = hotelRepository.findById(request.getHotelId()).orElseThrow(
+        Hotel hotel = hotelRepository.findById(booking.getRoom().getHotel().getId()).orElseThrow(
                 ()-> new EntityNotFoundException("Hotel not found")
         );
         Review review = Review.builder()

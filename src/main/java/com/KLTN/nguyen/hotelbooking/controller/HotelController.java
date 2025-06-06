@@ -1,13 +1,15 @@
 package com.KLTN.nguyen.hotelbooking.controller;
 
+import com.KLTN.nguyen.hotelbooking.dto.request.EditHotelRequest;
 import com.KLTN.nguyen.hotelbooking.dto.request.HotelRequest;
 import com.KLTN.nguyen.hotelbooking.dto.response.HotelResponse;
 import com.KLTN.nguyen.hotelbooking.service.AuthenticationService;
 import com.KLTN.nguyen.hotelbooking.service.CloudinaryService;
+import com.KLTN.nguyen.hotelbooking.service.EmailService;
 import com.KLTN.nguyen.hotelbooking.service.HotelService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +26,19 @@ public class HotelController {
     private final CloudinaryService cloudinaryService;
     private final HotelService hotelService;
     private final AuthenticationService authenticationService;
+    private final EmailService emailService;
     @GetMapping("/hotels")
-    public ResponseEntity<List<HotelResponse>> getHotels(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber){
-        return ResponseEntity.ok(hotelService.getHotels(pageNumber));
+    public Page<HotelResponse> getHotels(
+            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "") String location,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "8") int size
+    ) {
+        return hotelService.searchHotels(name, location, page, size);
+    }
+    @GetMapping("/admin/hotels")
+    public ResponseEntity<List<HotelResponse>> adminGetHotels(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber){
+        return ResponseEntity.ok(hotelService.getHotelss(pageNumber));
     }
     @GetMapping("/hotels/status")
     public ResponseEntity<List<HotelResponse>> getHotelsByStatus(@RequestParam(value = "page", defaultValue = "0") Integer pageNumber,@RequestParam("status") String status){
@@ -41,15 +53,14 @@ public class HotelController {
             // Parse JSON sang object
             ObjectMapper objectMapper = new ObjectMapper();
             HotelRequest hotelRequest = objectMapper.readValue(hotelRequestJson, HotelRequest.class);
-
             // Upload ảnh
             String imageUrl = cloudinaryService.uploadToCloudinary(file,"image", "Image");
-            hotelRequest.setImage(imageUrl);
-
-            return ResponseEntity.ok(hotelService.createHotel(hotelRequest));
+            hotelService.createHotel(hotelRequest, imageUrl);
+            return null;
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+
     }
     @GetMapping("/search")
     public ResponseEntity<List<HotelResponse>> searchHotels(
@@ -59,7 +70,12 @@ public class HotelController {
     }
     @PatchMapping("/activate/{id}")
     public ResponseEntity<HotelResponse> activateHotel(@PathVariable("id") Integer id){
-        return ResponseEntity.ok(hotelService.activateHotel(id));
+        HotelResponse hotelResponse = hotelService.activateHotel(id);
+        emailService.sendSimpleEmail(hotelResponse.getEmail(), "Đã chấp nhận khách sạn", "Khách sạn " + hotelResponse.getHotelName()+ "đã được chấp nhận trên hệ thống" +
+                "hãy đăng nhập vào hệ thống bằng tài khoản hệ thống với tên đăng nhập và mật khẩu là email của bạn"
+                );
+
+        return ResponseEntity.ok(hotelResponse);
     }
     @PatchMapping("/reject/{id}")
     public ResponseEntity<HotelResponse> rejectHotel(@PathVariable("id") Integer id){
@@ -67,10 +83,13 @@ public class HotelController {
     }
     @PatchMapping("/hide/{id}")
     public ResponseEntity<HotelResponse> hideHotel(@PathVariable("id") Integer id){
-        return ResponseEntity.ok(hotelService.hideHotel(id));
+        HotelResponse hotelResponse = hotelService.hideHotel(id);
+        emailService.sendSimpleEmail(hotelResponse.getEmail(), "Khách sạn của bạn không đủ tiêu chuẩn để tiếp tục xuất hiện", "Khách sạn " + hotelResponse.getHotelName()+ "đã bị ẩn khỏi hệ thống vì vi phạm tiêu chuẩn. Nếu có sai sót hay liên lạc tại email: ainemrty1@gmail.com"
+        );
+        return ResponseEntity.ok(hotelResponse);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<HotelResponse> updateHotel(@PathVariable("id") Integer id, @RequestBody HotelRequest hotelRequest){
+    public ResponseEntity<HotelResponse> updateHotel(@PathVariable("id") Integer id, @RequestBody EditHotelRequest hotelRequest){
         return ResponseEntity.ok(hotelService.updateHotel(id, hotelRequest));
     }
     @GetMapping("/owner/hotel")

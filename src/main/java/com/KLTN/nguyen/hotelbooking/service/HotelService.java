@@ -1,5 +1,6 @@
 package com.KLTN.nguyen.hotelbooking.service;
 
+import com.KLTN.nguyen.hotelbooking.dto.request.EditHotelRequest;
 import com.KLTN.nguyen.hotelbooking.dto.request.HotelRequest;
 import com.KLTN.nguyen.hotelbooking.dto.request.UserRequest;
 import com.KLTN.nguyen.hotelbooking.dto.response.HotelResponse;
@@ -15,6 +16,7 @@ import com.KLTN.nguyen.hotelbooking.util.Status;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,24 +32,27 @@ public class HotelService {
     private final ProvinceRepository provinceRepository;
     private final UserRepository userRepository;
     private final UserService userService;
-    public List<HotelResponse> getHotels(Integer pageNumber){
-        Pageable page = PageRequest.of(pageNumber, 10);
-        List<Hotel> hotels = hotelRepository.findAll(page).getContent();
-        return hotels.stream().map(HotelMapper::toResponseDTO).toList();
+    public Page<HotelResponse> searchHotels(String name, String location, int page, int size) {
+        String searchName = (name == null || name.trim().isEmpty()) ? null : "%" + name.trim() + "%";
+        String searchLocation = (location == null || location.trim().isEmpty()) ? null : "%" + location.trim() + "%";
+
+        Page<Hotel> hotelPage = hotelRepository.searchHotels(
+                searchName,
+                searchLocation,
+                PageRequest.of(page, size)
+        );
+        return hotelPage.map(HotelMapper::toResponseDTO);
     }
-    public HotelResponse getHotel(Integer id){
-        Hotel hotel = hotelRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Hotel isn't exist"));
-        return HotelMapper.toResponseDTO(hotel);
-    }
-    public HotelResponse createHotel(HotelRequest hotelRequest) {
+    public void createHotel(HotelRequest hotelRequest, String image) {
         Province province = provinceRepository.findById(hotelRequest.getProvinceId())
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy tỉnh/thành"));
-        UserRequest userRequest = UserRequest.builder()
-                .email(hotelRequest.getEmail())
-                .password(hotelRequest.getEmail())
-                .build();
-        userService.createUser(userRequest);
-        User owner = userRepository.findByEmail(hotelRequest.getEmail()).orElseThrow();
+        if (hotelRepository.findByEmail(hotelRequest.getEmail()) != null) {
+            throw new EntityExistsException("Email đã được sử dụng cho khách sạn khác");
+        }
+        if(userRepository.findByEmail(hotelRequest.getEmail()).isPresent()){
+            throw new EntityExistsException("Email đã sử dụng");
+        }
+        User owner = userRepository.findById(1).orElseThrow();
         Hotel hotel = Hotel.builder()
                 .hotelName(hotelRequest.getHotelName())
                 .address(hotelRequest.getAddress())
@@ -55,29 +60,29 @@ public class HotelService {
                 .email(hotelRequest.getEmail())
                 .owner(owner)
                 .phoneNumber(hotelRequest.getPhoneNumber())
-                .image(hotelRequest.getImage())
+                .image(image)
                 .status(hotelStatusRepository.findByCode(Status.PENDING.name()))
                 .build();
 
         Hotel savedHotel = hotelRepository.save(hotel);
-        return HotelMapper.toResponseDTO(savedHotel);
     }
-    public HotelResponse updateHotel(Integer id,HotelRequest hotelRequest){
-        Province province = provinceRepository.findById(hotelRequest.getProvinceId())
-                .orElse(new Province());
+    public HotelResponse updateHotel(Integer id, EditHotelRequest hotelRequest){
         Hotel hotel = hotelRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Hotel isn't valid"));
         hotel.setHotelName(hotelRequest.getHotelName());
-        hotel.setImage(hotelRequest.getImage());
         hotel.setAddress(hotelRequest.getAddress());
         hotel.setEmail(hotelRequest.getEmail());
         hotel.setPhoneNumber(hotelRequest.getPhoneNumber());
-        hotel.setProvince(province);
         hotelRepository.save(hotel);
         return HotelMapper.toResponseDTO(hotel);
     }
     public HotelResponse activateHotel(Integer id){
         Hotel hotel = hotelRepository.findById(id).orElseThrow(()->
                 new EntityNotFoundException("Hotel isn't valid"));
+        User user = userService.createUserOnlyEmail(hotel.getEmail());
+        user.setRole("OWNER");
+        user.setIsWorking(Boolean.TRUE);
+        userRepository.save(user);
+        hotel.setOwner(user);
         hotel.setStatus(hotelStatusRepository.findByCode(Status.ACCEPT.name()));
         hotelRepository.save(hotel);
         return HotelMapper.toResponseDTO(hotel);
@@ -124,6 +129,11 @@ public class HotelService {
         Pageable pageable = PageRequest.of(page, 10);
         return hotelRepository.findAllByHotelNameContaining(keyword, pageable)
                 .stream().map(HotelMapper::toResponseDTO).toList();
+    }
+    public List<HotelResponse> getHotelss(Integer pageNumber){
+        Pageable page = PageRequest.of(pageNumber, 10);
+        List<Hotel> hotels = hotelRepository.findAll(page).getContent();
+        return hotels.stream().map(HotelMapper::toResponseDTO).toList();
     }
 }
 

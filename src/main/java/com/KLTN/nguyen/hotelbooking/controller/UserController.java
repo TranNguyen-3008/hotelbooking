@@ -1,5 +1,6 @@
 package com.KLTN.nguyen.hotelbooking.controller;
 
+import com.KLTN.nguyen.hotelbooking.dto.request.ChangePassRequest;
 import com.KLTN.nguyen.hotelbooking.dto.request.UserRequest;
 import com.KLTN.nguyen.hotelbooking.dto.response.HotelResponse;
 import com.KLTN.nguyen.hotelbooking.dto.response.UserResponse;
@@ -43,9 +44,16 @@ public class UserController {
             return ResponseEntity.status(400).body(null); // Trả về BadRequest nếu có lỗi
         }
     }
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable("id") Integer id, @RequestBody UserRequest userUpdate){
-        return ResponseEntity.ok(userService.updateUser(id, userUpdate));
+    @PutMapping("/me")
+    public ResponseEntity<UserResponse> updateUser(@RequestHeader("Authorization") String authorizationHeader, @RequestBody UserRequest userUpdate){
+        try {
+            String token = authorizationHeader.substring(7);
+            Long userId = authenticationService.getUserIdFromToken(token);
+            Integer id = userId.intValue();
+            return ResponseEntity.ok(userService.updateUser(id, userUpdate));
+        }catch (Exception e){
+            return ResponseEntity.status(400).body(null);
+        }
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
@@ -65,5 +73,17 @@ public class UserController {
     public ResponseEntity<?> activeUser(@PathVariable Integer id) {
         userService.activeUser(id);
         return ResponseEntity.ok().body("User active successfully");
+    }
+    @PutMapping("/change-password")
+    public ResponseEntity<UserResponse> changePassword(@RequestHeader("Authorization") String authorizationHeader,
+                                                       @RequestBody ChangePassRequest changePassRequest){
+        try {
+            String token = authorizationHeader.substring(7);
+            Long userId = authenticationService.getUserIdFromToken(token);
+            Integer id = userId.intValue();
+            return ResponseEntity.ok(userService.changePassword(id, changePassRequest.getOldPassword(), changePassRequest.getNewPassword()));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(null); // Trả về BadRequest nếu có lỗi
+        }
     }
 }

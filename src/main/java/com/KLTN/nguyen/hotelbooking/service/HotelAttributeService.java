@@ -15,6 +15,7 @@ import com.KLTN.nguyen.hotelbooking.repository.HotelAttributeRepository;
 import com.KLTN.nguyen.hotelbooking.repository.HotelPhotoRepository;
 import com.KLTN.nguyen.hotelbooking.repository.HotelRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +29,12 @@ public class HotelAttributeService {
     final HotelAttributeRepository hotelAttributeRepository;
     final HotelRepository hotelRepository;
     final HotelPhotoRepository hotelPhotoRepository;
+    @Transactional
     public List<HotelAttributeResponse> updateHotelAttributes(Integer hotelId, List<String> attributeNames) {
         Hotel hotel = hotelRepository.findById(hotelId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy khách sạn"));
-
         List<Attribute> attributes = attributeRepository.findByAttributeIn(attributeNames);
+        hotelAttributeRepository.deleteByHotel(hotel);
         List<HotelAttributes> newHotelAttributes = attributes.stream()
                 .map(attr -> HotelAttributes.builder()
                         .hotel(hotel)

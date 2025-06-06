@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface HotelAttributeRepository extends JpaRepository<HotelAttributes, Integer> {
     List<HotelAttributes> findAllByHotel(Hotel hotel);
+
+    void deleteByHotel(Hotel hotel);
 }

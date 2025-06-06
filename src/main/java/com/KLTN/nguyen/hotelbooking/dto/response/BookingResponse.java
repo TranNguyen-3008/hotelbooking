@@ -17,4 +17,5 @@ public class BookingResponse {
     private String roomName;
     private String hotelName;
     private String paymentMethod;
+    private String email;
 }

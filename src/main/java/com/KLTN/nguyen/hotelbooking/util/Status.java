@@ -8,5 +8,6 @@ public enum Status {
     HIDING,
     ACCEPT,
     CANCEL,
-    ACTIVED
+    ACTIVATED,
+    REVIEWED
 }
